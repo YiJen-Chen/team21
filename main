@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <fstream>
-#include "CPU.h"
+#include "Player.h"
 using namespace std;
 
 
@@ -167,28 +167,19 @@ int main() {
 	}
 	cout << "P1 is " << p1.getCharacter() << endl << "P2 is " << p2.getCharacter() << endl << "P3 is " << p3.getCharacter() << endl;
 
-	cout << "Place Bet:\n";
+	
 	int amount1 = 100 + rand() % p1.getMoney();
 	int amount2 = 100 + rand() % p2.getMoney();
 	int amount3 = 100 + rand() % p2.getMoney();
-	if (p1.getCharacter() != "Banker") {
-		cout << "P1's Bet: " << amount1 << endl;
-	}
-	if (p2.getCharacter() != "Banker") {
-		cout << "P2's Bet: " << amount2 << endl;
-	}
-	if (p3.getCharacter() != "Banker") {
-		cout << "P3's Bet: " << amount3 << endl;
-	}
+	
 
-
-	cout << "\nP1's Deck:\n";
+	cout << "\nP1手牌:\n";
 	p1.print();
 	cout << endl;
-	cout << "P2's Deck:\n";
+	cout << "P2手牌:\n";
 	p2.print();
 	cout << endl;
-	cout << "P3's Deck:\n";
+	cout << "P3手牌:\n";
 	p3.print();
 	cout << endl << setw(2);
 
@@ -200,16 +191,9 @@ int main() {
 	p1.setPoint(selectCard(array1));
 	p2.setPoint(selectCard(array2));
 	p3.setPoint(selectCard(array3));
-	cout << "Result:\nP1 : " << p1.getCardName() << "\nP2 : " << p2.getCardName() << "\nP3 : " << p3.getCardName() << endl << endl;
+	cout << "牌型：\nP1 : " << p1.getCardName() << "\nP2 : " << p2.getCardName() << "\nP3 : " << p3.getCardName() << endl << endl;
 
-	/*if (cpu1.getRole() != "Banker" && cpu2.getRole()!="Banker") {
-		if (cpu3.getPoint()== "妞妞") {
-			cout << "CPU1 -" << amount1*3<<endl<<"CPU2 -"<<amount2*3<<endl;
-			cpu1.setMoney(cpu1.getMoney() - amount1);
-			cpu2.setMoney(cpu2.getMoney() - amount2);
-			cpu3.setMoney(cpu3.getMoney() + (amount1 * 3 + amount2 * 3));
-		}
-	}*/
+	
 	if (p3.getCharacter() == "Banker") {
 		if (selectCard(array3) >= selectCard(array1)) {
 			if (p3.getCardName() == "妞七" || p3.getCardName() == "妞八" || p3.getCardName() == "妞九") {
