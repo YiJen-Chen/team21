@@ -1,0 +1,469 @@
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+#include <iomanip>
+#include <fstream>
+#include "CPU.h"
+using namespace std;
+
+
+
+int selectBanker(int numbers) {
+	int num;
+	srand(time(0));
+	num = 1 + rand() % numbers;
+	return num;
+}
+void* shuffleCard(int deck[], int size) {
+	int index;
+	int temp;
+	for (unsigned int i = 0; i < 52; i++) {
+		index = rand() % 52;
+		temp = deck[i];
+		deck[i] = deck[index];
+		deck[index] = temp;
+	}
+	return 0;
+}
+bool check(int x, int y, int z) {
+	if (((x + y + z) % 10) == 0) {
+		return 1;
+	}
+	else return 0;
+}
+
+int selectCard(int d[]) {
+
+	if (check(d[0], d[1], d[2]) == 1) {
+
+		return (d[3] + d[4]) % 10;
+
+	}
+
+	if (check(d[0], d[1], d[3]) == 1) {
+
+		return (d[2] + d[4]) % 10;
+
+	}
+
+	if (check(d[0], d[1], d[4]) == 1) {
+
+		return (d[3] + d[2]) % 10;
+
+	}
+
+	if (check(d[0], d[2], d[3]) == 1) {
+
+		return (d[1] + d[4]) % 10;
+
+	}
+
+	if (check(d[0], d[2], d[4]) == 1) {
+
+		return (d[1] + d[3]) % 10;
+
+	}
+
+	if (check(d[0], d[3], d[4]) == 1) {
+
+		return (d[1] + d[2]) % 10;
+	}//1
+
+	if (check(d[1], d[2], d[3]) == 1) {
+
+		return (d[0] + d[4]) % 10;
+
+	}
+
+	if (check(d[1], d[2], d[4]) == 1) {
+
+		return (d[0] + d[3]) % 10;
+
+	}
+
+	if (check(d[1], d[3], d[4]) == 1) {
+
+		return (d[0] + d[2]) % 10;
+
+	}//2
+
+	if (check(d[2], d[3], d[4]) == 1) {
+
+		return (d[0] + d[1]) % 10;
+
+	}
+	else return -1;
+}
+int main() {
+	Player p1;
+	Player p2;
+	Player p3;
+	p1.setName("Player 1");
+	p2.setName("Player 2");
+	p3.setName("Player 3");
+
+	p1.setMoney(100 + rand() % 1000);
+	p2.setMoney(100 + rand() % 1000);
+	p3.setMoney(100 + rand() % 1000);
+
+	switch (selectBanker(3)) {
+	case 1:
+		p1.setCharacter("Banker");
+		break;
+	case 2:
+		p2.setCharacter("Banker");
+		break;
+	case 3:
+		p3.setCharacter("Banker");
+		break;
+	default:
+		p3.setCharacter("Banker");
+	}
+
+	const int CardNumbers = 52;
+	int maindeck[CardNumbers];
+	srand(time(0));
+	int number[] = { 1,2,3,4,5,6,7,8,9,10,10,10,10 };
+	int j = 0;
+
+	//intitalized deck
+	for (int i = 0; i < CardNumbers; i++) {
+		maindeck[i] = i;
+	}
+	//intital Every card of points
+	for (int i = 0; i < CardNumbers; i++) {
+		maindeck[i] = number[j++];
+		while (j > 12) {
+			j = 0;
+		}
+	}
+	//Print all cards(before suffled)
+	/*for (int i = 0; i < CardNumbers; i++) {
+		cout << maindeck[i] << " ";
+		if (i == 12 || i == 25 || i == 38 || i == 51) {
+			cout << endl;
+		}
+	}*/
+
+	shuffleCard(maindeck, 52);
+	//splitcard
+	int count1 = 0;
+	int count2 = 0;
+	int count3 = 0;
+	for (int i = 0; i < 15; i++) {
+
+		if (i == 0 || i == 3 || i == 6 || i == 9 || i == 12) {
+			p1.setDeck(maindeck[i], count1);
+			count1++;
+		}
+		else if (i == 1 || i == 4 || i == 7 || i == 10 || i == 13) {
+			p2.setDeck(maindeck[i], count2);
+			count2++;
+		}
+		else if (i == 2 || i == 5 || i == 8 || i == 11 || i == 14) {
+			p3.setDeck(maindeck[i], count3);
+			count3++;
+		}
+	}
+	cout << "P1 is " << p1.getCharacter() << endl << "P2 is " << p2.getCharacter() << endl << "P3 is " << p3.getCharacter() << endl;
+
+	cout << "Place Bet:\n";
+	int amount1 = 100 + rand() % p1.getMoney();
+	int amount2 = 100 + rand() % p2.getMoney();
+	int amount3 = 100 + rand() % p2.getMoney();
+	if (p1.getCharacter() != "Banker") {
+		cout << "P1's Bet: " << amount1 << endl;
+	}
+	if (p2.getCharacter() != "Banker") {
+		cout << "P2's Bet: " << amount2 << endl;
+	}
+	if (p3.getCharacter() != "Banker") {
+		cout << "P3's Bet: " << amount3 << endl;
+	}
+
+
+	cout << "\nP1's Deck:\n";
+	p1.print();
+	cout << endl;
+	cout << "P2's Deck:\n";
+	p2.print();
+	cout << endl;
+	cout << "P3's Deck:\n";
+	p3.print();
+	cout << endl << setw(2);
+
+	int array1[5] = { p1.getDeck(0),p1.getDeck(1),p1.getDeck(2),p1.getDeck(3),p1.getDeck(4) };
+	int array2[5] = { p2.getDeck(0),p2.getDeck(1),p2.getDeck(2),p2.getDeck(3),p2.getDeck(4) };
+	int array3[5] = { p3.getDeck(0),p3.getDeck(1),p3.getDeck(2),p3.getDeck(3),p3.getDeck(4) };
+	cout << endl;
+	//int count = 0;
+	p1.setPoint(selectCard(array1));
+	p2.setPoint(selectCard(array2));
+	p3.setPoint(selectCard(array3));
+	cout << "Result:\nP1 : " << p1.getCardName() << "\nP2 : " << p2.getCardName() << "\nP3 : " << p3.getCardName() << endl << endl;
+
+	/*if (cpu1.getRole() != "Banker" && cpu2.getRole()!="Banker") {
+		if (cpu3.getPoint()== "妞妞") {
+			cout << "CPU1 -" << amount1*3<<endl<<"CPU2 -"<<amount2*3<<endl;
+			cpu1.setMoney(cpu1.getMoney() - amount1);
+			cpu2.setMoney(cpu2.getMoney() - amount2);
+			cpu3.setMoney(cpu3.getMoney() + (amount1 * 3 + amount2 * 3));
+		}
+	}*/
+	if (p3.getCharacter() == "Banker") {
+		if (selectCard(array3) >= selectCard(array1)) {
+			if (p3.getCardName() == "妞七" || p3.getCardName() == "妞八" || p3.getCardName() == "妞九") {
+				cout << "P3 Banker Win +" << amount1 * 2 << endl;
+				cout << "P1 Player Lose -" << amount1 * 2 << endl;
+				p3.setMoney(p3.getMoney() + amount1 * 2);
+				p1.setMoney(p1.getMoney() - amount1 * 2);
+			}
+			else {
+				cout << "P3 Banker Win +" << amount1 << endl;
+				cout << "P1 Player Lose -" << amount1 << endl;
+				p3.setMoney(p3.getMoney() + amount1);
+				p1.setMoney(p1.getMoney() - amount1);
+			}
+		}
+		else if (selectCard(array3) < selectCard(array1)) {
+			if (p3.getCardName() == "妞妞") {
+				cout << "P3 Banker Win +" << amount1 * 3 << endl;
+				cout << "P1 Player Lose -" << amount1 * 3 << endl;
+				p3.setMoney(p3.getMoney() + amount1 * 3);
+				p1.setMoney(p1.getMoney() - amount1 * 3);
+
+			}
+			else if (p1.getCardName() == "妞七" || p1.getCardName() == "妞八" || p1.getCardName() == "妞九") {
+				cout << "P3 Banker Lose -" << amount1 * 2 << endl;
+				cout << "P1 Player Win +" << amount1 * 2 << endl;
+				p3.setMoney(p3.getMoney() - amount1 * 2);
+				p1.setMoney(p1.getMoney() + amount1 * 2);
+
+			}
+			else if (p1.getCardName() == "妞妞") {
+				cout << "P3 Banker Lose -" << amount1 * 3 << endl;
+				cout << "P1 Player Win +" << amount1 * 3 << endl;
+				p3.setMoney(p3.getMoney() - amount1 * 3);
+				p1.setMoney(p1.getMoney() + amount1 * 3);
+			}
+			else {
+				cout << "P3 Banker Lose -" << amount1;
+				cout << "P1 Player Win +" << amount1;
+				p3.setMoney(p3.getMoney() - amount1);
+				p1.setMoney(p1.getMoney() + amount1);
+			}
+		}
+		cout << endl;
+		if (selectCard(array3) >= selectCard(array2)) {
+			if (p3.getCardName() == "妞七" || p3.getCardName() == "妞八" || p3.getCardName() == "妞九") {
+				cout << "P3 Banker Win +" << amount2 * 2 << endl;
+				cout << "P2 Player Lose -" << amount2 * 2 << endl;
+				p3.setMoney(p3.getMoney() + amount2 * 2);
+				p2.setMoney(p2.getMoney() - amount2 * 2);
+			}
+			else {
+				cout << "P3 Banker Win +" << amount2 << endl;
+				cout << "P2 Player Lose -" << amount2 << endl;
+				p3.setMoney(p3.getMoney() + amount2);
+				p2.setMoney(p2.getMoney() - amount2);
+			}
+		}
+		else if (selectCard(array3) < selectCard(array2)) {
+			if (p3.getCardName() == "妞妞") {
+				cout << "P3 Banker Win +" << amount2 * 3 << endl;
+				cout << "P2 Player Lose -" << amount2 * 3 << endl;
+				p3.setMoney(p3.getMoney() + amount2 * 3);
+				p2.setMoney(p2.getMoney() - amount2 * 3);
+			}
+			else if (p2.getCardName() == "妞七" || p2.getCardName() == "妞八" || p2.getCardName() == "妞九") {
+				cout << "P3 Banker Lose -" << amount2 * 2 << endl;
+				cout << "P2 Player Win +" << amount2 * 2 << endl;
+				p3.setMoney(p3.getMoney() - amount2 * 2);
+				p2.setMoney(p2.getMoney() + amount2 * 2);
+			}
+			else if (p2.getCardName() == "妞妞") {
+				cout << "P3 Banker Lose -" << amount2 * 3 << endl;
+				cout << "P2 Player Win +" << amount2 * 3 << endl;
+				p3.setMoney(p3.getMoney() - amount2 * 3);
+				p2.setMoney(p2.getMoney() + amount2 * 3);
+			}
+			else {
+				cout << "P3 Banker Lose -" << amount2 << endl;
+				cout << "P2 Player Win +" << amount2 << endl;
+				p3.setMoney(p3.getMoney() - amount2);
+				p2.setMoney(p2.getMoney() + amount2);
+			}
+		}
+	}
+	if (p2.getCardName() == "Banker") {
+		if (selectCard(array2) >= selectCard(array1)) {
+			if (p2.getCardName() == "妞七" || p2.getCardName() == "妞八" || p2.getCardName() == "妞九") {
+				cout << "P2 Banker Win +" << amount1 * 2 << endl;
+				cout << "P1 Player Lose -" << amount1 * 2 << endl;
+				p2.setMoney(p2.getMoney() + amount1 * 2);
+				p1.setMoney(p1.getMoney() - amount1 * 2);
+			}
+			else {
+				cout << "P2 Banker Win +" << amount1 << endl;
+				cout << "P1 Player Lose -" << amount1 << endl;
+				p2.setMoney(p2.getMoney() + amount1);
+				p1.setMoney(p1.getMoney() - amount1);
+			}
+		}
+		else if (selectCard(array2) < selectCard(array1)) {
+			if (p2.getCardName() == "妞妞") {
+				cout << "P2 Banker Win +" << amount1 * 3 << endl;
+				cout << "P1 Player Lose -" << amount1 * 3 << endl;
+				p2.setMoney(p2.getMoney() + amount1 * 3);
+				p1.setMoney(p1.getMoney() - amount1 * 3);
+			}
+			else if (p1.getCardName() == "妞七" || p1.getCardName() == "妞八" || p1.getCardName() == "妞九") {
+				cout << "P2 Banker Lose -" << amount1 * 2 << endl;
+				cout << "P1 Player Win +" << amount1 * 2 << endl;
+				p2.setMoney(p2.getMoney() - amount1 * 2);
+				p1.setMoney(p1.getMoney() + amount1 * 2);
+			}
+			else if (p1.getCardName() == "妞妞") {
+				cout << "P2 Banker Lose -" << amount1 * 3 << endl;
+				cout << "P1 Player Win +" << amount1 * 3 << endl;
+				p2.setMoney(p2.getMoney() - amount1 * 3);
+				p1.setMoney(p1.getMoney() + amount1 * 3);
+			}
+			else {
+				cout << "P2 Banker Lose -" << amount1 << endl;
+				cout << "P1 Player Win +" << amount1 << endl;
+				p2.setMoney(p2.getMoney() - amount1);
+				p1.setMoney(p1.getMoney() + amount1);
+			}
+		}
+		cout << endl;
+		if (selectCard(array2) >= selectCard(array3)) {
+			if (p2.getCardName() == "妞七" || p2.getCardName() == "妞八" || p2.getCardName() == "妞九") {
+				cout << "P2 Banker Win +" << amount3 * 2 << endl;
+				cout << "P3 Player Lose -" << amount3 * 2 << endl;
+				p2.setMoney(p2.getMoney() + amount3 * 2);
+				p3.setMoney(p3.getMoney() - amount3 * 2);
+			}
+			else {
+				cout << "P2 Banker Win +" << amount3 << endl;
+				cout << "P3 Player Lose -" << amount3 << endl;
+				p2.setMoney(p2.getMoney() + amount3);
+				p3.setMoney(p3.getMoney() - amount3);
+			}
+		}
+		else if (selectCard(array2) < selectCard(array3)) {
+			if (p2.getCardName() == "妞妞") {
+				cout << "P2 Banker Lose -" << amount3 * 3 << endl;
+				cout << "P3 Player Win +" << amount3 * 3 << endl;
+				p2.setMoney(p2.getMoney() - amount3 * 3);
+				p3.setMoney(p3.getMoney() + amount3 * 3);
+			}
+			else if (p3.getCardName() == "妞七" || p3.getCardName() == "妞八" || p3.getCardName() == "妞九") {
+				cout << "P2 Banker Lose -" << amount3 * 2 << endl;
+				cout << "P3 Player Win +" << amount3 * 2 << endl;
+				p2.setMoney(p2.getMoney() - amount3 * 2);
+				p3.setMoney(p3.getMoney() + amount3 * 2);
+			}
+			else if (p3.getCardName() == "妞妞") {
+				cout << "P2 Banker Lose -" << amount3 * 3 << endl;
+				cout << "P3 Player Win +" << amount3 * 3 << endl;
+				p2.setMoney(p2.getMoney() - amount3 * 3);
+				p3.setMoney(p3.getMoney() + amount3 * 3);
+			}
+			else {
+				cout << "P2 Banker Lose -" << amount3 << endl;
+				cout << "P3 Player Win +" << amount3 << endl;
+				p2.setMoney(p2.getMoney() - amount3);
+				p3.setMoney(p3.getMoney() + amount3);
+			}
+		}
+	}
+	if (p1.getCharacter() == "Banker") {
+		if (selectCard(array1) >= selectCard(array2)) {
+			if (p1.getCardName() == "妞七" || p1.getCardName() == "妞八" || p1.getCardName() == "妞九") {
+				cout << "P1 Banker Win +" << amount2 * 2 << endl;
+				cout << "P2 Player Lose -" << amount2 * 2 << endl;
+				p1.setMoney(p1.getMoney() + amount2 * 2);
+				p2.setMoney(p2.getMoney() - amount2 * 2);
+			}
+			else {
+				cout << "P1 Banker Win +" << amount2 << endl;
+				cout << "P2 Player Lose -" << amount2 << endl;
+				p1.setMoney(p1.getMoney() + amount2);
+				p2.setMoney(p2.getMoney() - amount2);
+			}
+		}
+		else if (selectCard(array1) < selectCard(array2)) {
+			if (p1.getCardName() == "妞妞") {
+				cout << "P1 Banker Lose -" << amount2 * 3 << endl;
+				cout << "P2 Player Win +" << amount2 * 3 << endl;
+				p1.setMoney(p1.getMoney() - amount2 * 3);
+				p2.setMoney(p2.getMoney() + amount2 * 3);
+			}
+			else if (p2.getCardName() == "妞七" || p2.getCardName() == "妞八" || p2.getCardName() == "妞九") {
+				cout << "P1 Banker Lose -" << amount2 * 2 << endl;
+				cout << "P2 Player Win +" << amount2 * 2 << endl;
+				p1.setMoney(p1.getMoney() - amount2 * 2);
+				p2.setMoney(p2.getMoney() + amount2 * 2);
+			}
+			else if (p2.getCardName() == "妞妞") {
+				cout << "P1 Banker Lose -" << amount2 * 3 << endl;
+				cout << "P2 Player Win +" << amount2 * 3 << endl;
+				p1.setMoney(p1.getMoney() - amount2 * 3);
+				p2.setMoney(p2.getMoney() + amount2 * 3);
+			}
+			else {
+				cout << "P1 Banker Lose -" << amount2 << endl;
+				cout << "P2 Player Win +" << amount2 << endl;
+				p1.setMoney(p1.getMoney() - amount2);
+				p2.setMoney(p2.getMoney() + amount2);
+			}
+		}
+		cout << endl;
+		if (selectCard(array1) >= selectCard(array3)) {
+			if (p1.getCardName() == "妞七" || p1.getCardName() == "妞八" || p1.getCardName() == "妞九") {
+				cout << "P1 Banker Win +" << amount3 * 2 << endl;
+				cout << "P3 Player Lose -" << amount3 * 2 << endl;
+				p1.setMoney(p1.getMoney() + amount3 * 2);
+				p3.setMoney(p3.getMoney() - amount3 * 2);
+			}
+			else {
+				cout << "P1 Banker Win +" << amount3 << endl;
+				cout << "P3 Player Lose -" << amount3 << endl;
+				p1.setMoney(p1.getMoney() + amount3);
+				p3.setMoney(p3.getMoney() - amount3);
+			}
+		}
+		else if (selectCard(array1) < selectCard(array3)) {
+			if (p1.getCardName() == "妞妞") {
+				cout << "P1 Banker Win +" << amount3 * 3 << endl;
+				cout << "P3 Player Lose -" << amount3 * 3 << endl;
+				p1.setMoney(p1.getMoney() + amount3 * 3);
+				p3.setMoney(p3.getMoney() - amount3 * 3);
+
+			}
+			else if (p3.getCardName() == "妞七" || p3.getCardName() == "妞八" || p3.getCardName() == "妞九") {
+				cout << "P1 Banker Lose -" << amount3 * 2 << endl;
+				cout << "P3 Player Win +" << amount3 * 2 << endl;
+				p1.setMoney(p1.getMoney() - amount3 * 2);
+				p3.setMoney(p3.getMoney() + amount3 * 2);
+
+			}
+			else if (p3.getCardName() == "妞妞") {
+				cout << "P1 Banker Lose -" << amount3 * 3 << endl;
+				cout << "P3 Player Win +" << amount3 * 3 << endl;
+				p1.setMoney(p1.getMoney() - amount3 * 3);
+				p3.setMoney(p3.getMoney() + amount3 * 3);
+
+			}
+			else
+			{
+				cout << "P1 Banker Lose -" << amount3 << endl;
+				cout << "P3 Player Win +" << amount3 << endl;
+				p1.setMoney(p1.getMoney() - amount3);
+				p3.setMoney(p3.getMoney() + amount3);
+			}
+		}
+	}
+	cout << endl;
+}
